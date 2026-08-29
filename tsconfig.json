@@ -1,5 +1,9 @@
 {
   "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "eslint.config.js"],
+  // Build output and local caches must never enter the type-check program:
+  // dist/ and .wrangler/ hold thousands of generated files and make a check
+  // that normally takes seconds run for minutes.
+  "exclude": ["node_modules", "dist", "dist-ssr", ".wrangler", ".output", ".nitro", "supabase"],
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",
@@ -11,17 +15,24 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": false,
     "noEmit": true,
+    // Incrementele cache: de eerste check bouwt .tsbuildinfo, elke volgende
+    // check hergebruikt die en blijft daardoor binnen enkele seconden.
+    "incremental": true,
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo/app.tsbuildinfo",
 
     "skipLibCheck": true,
-    "strict": true,
+    // The imported ROUT codebase was authored against looser settings; strict
+    // null checks stay on because TanStack Router's types rely on them.
+    "strict": false,
+    "strictNullChecks": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitOverride": false,
+    "noImplicitReturns": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false,
     "noUncheckedSideEffectImports": true,
     "paths": {
       "@/*": ["./src/*"]

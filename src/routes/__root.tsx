@@ -11,6 +11,15 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { ThemeProvider } from "@/hooks/useTheme";
+import { I18nProvider } from "@/lib/i18n";
+import { AuthProvider } from "@/hooks/useAuth";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { LanguageSync } from "@/components/LanguageSync";
+import "@/lib/env";
 
 function NotFoundComponent() {
   return (
@@ -77,23 +86,51 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "ROUT — QR-codes en korte links met karakter" },
+      {
+        name: "description",
+        content:
+          "Ontwerp stijlvolle QR-codes en trackbare korte links. Privacyvriendelijk en in eigen beheer.",
+      },
+      { name: "author", content: "ROUT" },
+      { property: "og:title", content: "ROUT — QR-codes en korte links met karakter" },
+      {
+        property: "og:description",
+        content:
+          "Ontwerp stijlvolle QR-codes en trackbare korte links. Privacyvriendelijk en in eigen beheer.",
+      },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://rout.be/og-banner.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      {
+        property: "og:image:alt",
+        content: "ROUT — QR codes en korte links met karakter",
+      },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:image", content: "https://rout.be/og-banner.jpg" },
+      // Statusbalk van de browser volgt de huisstijl, licht én donker.
+      { name: "theme-color", content: "#FBF9F5", media: "(prefers-color-scheme: light)" },
+      { name: "theme-color", content: "#131211", media: "(prefers-color-scheme: dark)" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "ROUT" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "application-name", content: "ROUT" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "manifest", href: "/manifest.json" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "icon", href: "/icon-192.png", type: "image/png", sizes: "192x192" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
     ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -117,10 +154,28 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    void import("@/lib/pwa").then((m) => m.setupPwa());
+  }, []);
+
   return (
+
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <ThemeProvider>
+        <I18nProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <AuthProvider>
+              <LanguageSync />
+              <ErrorBoundary>
+                {/* Required: nested routes render here. */}
+                <Outlet />
+              </ErrorBoundary>
+            </AuthProvider>
+          </TooltipProvider>
+        </I18nProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
