@@ -1,0 +1,18 @@
+{
+  "id": "/",
+  "name": "ROUT — QR-codes en korte links met karakter",
+  "short_name": "ROUT",
+  "description": "Ontwerp stijlvolle QR-codes en trackbare korte links. Privacyvriendelijk en in eigen beheer.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FBF9F5",
+  "theme_color": "#FBF9F5",
+  "lang": "nl",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

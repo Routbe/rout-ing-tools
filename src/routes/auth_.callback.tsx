@@ -1,0 +1,16 @@
+import { createFileRoute } from "@tanstack/react-router";
+import Page from "@/pages/routes/auth_.callback";
+
+export const Route = createFileRoute("/auth_/callback")({
+  head: () => ({
+    meta: [
+      { title: "ROUT" },
+      { name: "description", content: "ROUT — QR-codes en korte links met karakter." },
+      { property: "og:title", content: "ROUT" },
+      { property: "og:description", content: "ROUT — QR-codes en korte links met karakter." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: Page,
+});
