@@ -1,13 +1,18 @@
-import { useEffect, useState } from "react";
-import { Copy, Crown, Globe, Loader2 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { Copy, Crown, Globe, Loader2, Mail } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { getMySubdomainSettings, setMySubdomainSettings } from "@/lib/subdomain.functions";
+import { getMyRootClaims, resendMyClaimMail } from "@/lib/subdomain-claims.functions";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+
+type ClaimHistory = Awaited<ReturnType<typeof getMyRootClaims>>[number];
+type MailDiagnostics = { admin: string; user: string } | null;
+
 
 type Tier = "free" | "pro" | "root_lifetime";
 type RootStatus = "none" | "pending_dns" | "active";

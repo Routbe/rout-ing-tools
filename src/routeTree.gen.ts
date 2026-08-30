@@ -57,6 +57,7 @@ import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminOpsRouteImport } from './routes/_authenticated/admin.ops'
 import { Route as AuthenticatedAdminSepaRouteImport } from './routes/_authenticated/admin.sepa'
+import { Route as AuthenticatedAdminSubdomainsRouteImport } from './routes/_authenticated/admin.subdomains'
 import { Route as AuthenticatedAdminWebhooksRouteImport } from './routes/_authenticated/admin.webhooks'
 import { Route as AuthenticatedDashboardBlueskyRouteImport } from './routes/_authenticated/dashboard.bluesky'
 import { Route as AuthenticatedDashboardDomainsRouteImport } from './routes/_authenticated/dashboard.domains'
@@ -325,6 +326,12 @@ const AuthenticatedAdminSepaRoute = AuthenticatedAdminSepaRouteImport.update({
   path: '/sepa',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminSubdomainsRoute =
+  AuthenticatedAdminSubdomainsRouteImport.update({
+    id: '/subdomains',
+    path: '/subdomains',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminWebhooksRoute =
   AuthenticatedAdminWebhooksRouteImport.update({
     id: '/webhooks',
@@ -518,6 +525,7 @@ export interface FileRoutesByFullPath {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/ops': typeof AuthenticatedAdminOpsRoute
   '/admin/sepa': typeof AuthenticatedAdminSepaRoute
+  '/admin/subdomains': typeof AuthenticatedAdminSubdomainsRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/dashboard/bluesky': typeof AuthenticatedDashboardBlueskyRoute
   '/dashboard/domains': typeof AuthenticatedDashboardDomainsRoute
@@ -594,6 +602,7 @@ export interface FileRoutesByTo {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/ops': typeof AuthenticatedAdminOpsRoute
   '/admin/sepa': typeof AuthenticatedAdminSepaRoute
+  '/admin/subdomains': typeof AuthenticatedAdminSubdomainsRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/dashboard/bluesky': typeof AuthenticatedDashboardBlueskyRoute
   '/dashboard/domains': typeof AuthenticatedDashboardDomainsRoute
@@ -672,6 +681,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/ops': typeof AuthenticatedAdminOpsRoute
   '/_authenticated/admin/sepa': typeof AuthenticatedAdminSepaRoute
+  '/_authenticated/admin/subdomains': typeof AuthenticatedAdminSubdomainsRoute
   '/_authenticated/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/_authenticated/dashboard/bluesky': typeof AuthenticatedDashboardBlueskyRoute
   '/_authenticated/dashboard/domains': typeof AuthenticatedDashboardDomainsRoute
@@ -750,6 +760,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/ops'
     | '/admin/sepa'
+    | '/admin/subdomains'
     | '/admin/webhooks'
     | '/dashboard/bluesky'
     | '/dashboard/domains'
@@ -826,6 +837,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/ops'
     | '/admin/sepa'
+    | '/admin/subdomains'
     | '/admin/webhooks'
     | '/dashboard/bluesky'
     | '/dashboard/domains'
@@ -903,6 +915,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/contact'
     | '/_authenticated/admin/ops'
     | '/_authenticated/admin/sepa'
+    | '/_authenticated/admin/subdomains'
     | '/_authenticated/admin/webhooks'
     | '/_authenticated/dashboard/bluesky'
     | '/_authenticated/dashboard/domains'
@@ -1325,6 +1338,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSepaRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/subdomains': {
+      id: '/_authenticated/admin/subdomains'
+      path: '/subdomains'
+      fullPath: '/admin/subdomains'
+      preLoaderRoute: typeof AuthenticatedAdminSubdomainsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/webhooks': {
       id: '/_authenticated/admin/webhooks'
       path: '/webhooks'
@@ -1537,6 +1557,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminOpsRoute: typeof AuthenticatedAdminOpsRoute
   AuthenticatedAdminSepaRoute: typeof AuthenticatedAdminSepaRoute
+  AuthenticatedAdminSubdomainsRoute: typeof AuthenticatedAdminSubdomainsRoute
   AuthenticatedAdminWebhooksRoute: typeof AuthenticatedAdminWebhooksRoute
 }
 
@@ -1544,6 +1565,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
   AuthenticatedAdminOpsRoute: AuthenticatedAdminOpsRoute,
   AuthenticatedAdminSepaRoute: AuthenticatedAdminSepaRoute,
+  AuthenticatedAdminSubdomainsRoute: AuthenticatedAdminSubdomainsRoute,
   AuthenticatedAdminWebhooksRoute: AuthenticatedAdminWebhooksRoute,
 }
 
