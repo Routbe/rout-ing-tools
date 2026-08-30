@@ -57,6 +57,7 @@ import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminOpsRouteImport } from './routes/_authenticated/admin.ops'
 import { Route as AuthenticatedAdminSepaRouteImport } from './routes/_authenticated/admin.sepa'
+import { Route as AuthenticatedAdminSubdomainsRouteImport } from './routes/_authenticated/admin.subdomains'
 import { Route as AuthenticatedAdminWebhooksRouteImport } from './routes/_authenticated/admin.webhooks'
 import { Route as AuthenticatedDashboardBlueskyRouteImport } from './routes/_authenticated/dashboard.bluesky'
 import { Route as AuthenticatedDashboardDomainsRouteImport } from './routes/_authenticated/dashboard.domains'
@@ -78,6 +79,7 @@ import { Route as ApiAuthProviderCallbackRouteImport } from './routes/api_.auth.
 import { Route as ApiPublicAuthProviderRouteImport } from './routes/api_.public.auth.$provider'
 import { Route as ApiPublicAuthMagicLinkRouteImport } from './routes/api_.public.auth.magic-link'
 import { Route as ApiPublicBadgeHandleRouteImport } from './routes/api_.public.badge.$handle'
+import { Route as ApiPublicCronCheckDnsRouteImport } from './routes/api_.public.cron.check-dns'
 import { Route as ApiPublicCronSecureshieldBillingRouteImport } from './routes/api_.public.cron.secureshield-billing'
 import { Route as ApiPublicCronSyncSocialsRouteImport } from './routes/api_.public.cron.sync-socials'
 import { Route as ApiPublicOgHandleRouteImport } from './routes/api_.public.og.$handle'
@@ -324,6 +326,12 @@ const AuthenticatedAdminSepaRoute = AuthenticatedAdminSepaRouteImport.update({
   path: '/sepa',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminSubdomainsRoute =
+  AuthenticatedAdminSubdomainsRouteImport.update({
+    id: '/subdomains',
+    path: '/subdomains',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminWebhooksRoute =
   AuthenticatedAdminWebhooksRouteImport.update({
     id: '/webhooks',
@@ -434,6 +442,11 @@ const ApiPublicBadgeHandleRoute = ApiPublicBadgeHandleRouteImport.update({
   path: '/api/public/badge/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronCheckDnsRoute = ApiPublicCronCheckDnsRouteImport.update({
+  id: '/api_/public/cron/check-dns',
+  path: '/api/public/cron/check-dns',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronSecureshieldBillingRoute =
   ApiPublicCronSecureshieldBillingRouteImport.update({
     id: '/api_/public/cron/secureshield-billing',
@@ -512,6 +525,7 @@ export interface FileRoutesByFullPath {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/ops': typeof AuthenticatedAdminOpsRoute
   '/admin/sepa': typeof AuthenticatedAdminSepaRoute
+  '/admin/subdomains': typeof AuthenticatedAdminSubdomainsRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/dashboard/bluesky': typeof AuthenticatedDashboardBlueskyRoute
   '/dashboard/domains': typeof AuthenticatedDashboardDomainsRoute
@@ -533,6 +547,7 @@ export interface FileRoutesByFullPath {
   '/api/public/auth/$provider': typeof ApiPublicAuthProviderRouteWithChildren
   '/api/public/auth/magic-link': typeof ApiPublicAuthMagicLinkRoute
   '/api/public/badge/$handle': typeof ApiPublicBadgeHandleRoute
+  '/api/public/cron/check-dns': typeof ApiPublicCronCheckDnsRoute
   '/api/public/cron/secureshield-billing': typeof ApiPublicCronSecureshieldBillingRoute
   '/api/public/cron/sync-socials': typeof ApiPublicCronSyncSocialsRoute
   '/api/public/og/$handle': typeof ApiPublicOgHandleRoute
@@ -587,6 +602,7 @@ export interface FileRoutesByTo {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/ops': typeof AuthenticatedAdminOpsRoute
   '/admin/sepa': typeof AuthenticatedAdminSepaRoute
+  '/admin/subdomains': typeof AuthenticatedAdminSubdomainsRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/dashboard/bluesky': typeof AuthenticatedDashboardBlueskyRoute
   '/dashboard/domains': typeof AuthenticatedDashboardDomainsRoute
@@ -608,6 +624,7 @@ export interface FileRoutesByTo {
   '/api/public/auth/$provider': typeof ApiPublicAuthProviderRouteWithChildren
   '/api/public/auth/magic-link': typeof ApiPublicAuthMagicLinkRoute
   '/api/public/badge/$handle': typeof ApiPublicBadgeHandleRoute
+  '/api/public/cron/check-dns': typeof ApiPublicCronCheckDnsRoute
   '/api/public/cron/secureshield-billing': typeof ApiPublicCronSecureshieldBillingRoute
   '/api/public/cron/sync-socials': typeof ApiPublicCronSyncSocialsRoute
   '/api/public/og/$handle': typeof ApiPublicOgHandleRoute
@@ -664,6 +681,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/ops': typeof AuthenticatedAdminOpsRoute
   '/_authenticated/admin/sepa': typeof AuthenticatedAdminSepaRoute
+  '/_authenticated/admin/subdomains': typeof AuthenticatedAdminSubdomainsRoute
   '/_authenticated/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
   '/_authenticated/dashboard/bluesky': typeof AuthenticatedDashboardBlueskyRoute
   '/_authenticated/dashboard/domains': typeof AuthenticatedDashboardDomainsRoute
@@ -685,6 +703,7 @@ export interface FileRoutesById {
   '/api_/public/auth/$provider': typeof ApiPublicAuthProviderRouteWithChildren
   '/api_/public/auth/magic-link': typeof ApiPublicAuthMagicLinkRoute
   '/api_/public/badge/$handle': typeof ApiPublicBadgeHandleRoute
+  '/api_/public/cron/check-dns': typeof ApiPublicCronCheckDnsRoute
   '/api_/public/cron/secureshield-billing': typeof ApiPublicCronSecureshieldBillingRoute
   '/api_/public/cron/sync-socials': typeof ApiPublicCronSyncSocialsRoute
   '/api_/public/og/$handle': typeof ApiPublicOgHandleRoute
@@ -741,6 +760,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/ops'
     | '/admin/sepa'
+    | '/admin/subdomains'
     | '/admin/webhooks'
     | '/dashboard/bluesky'
     | '/dashboard/domains'
@@ -762,6 +782,7 @@ export interface FileRouteTypes {
     | '/api/public/auth/$provider'
     | '/api/public/auth/magic-link'
     | '/api/public/badge/$handle'
+    | '/api/public/cron/check-dns'
     | '/api/public/cron/secureshield-billing'
     | '/api/public/cron/sync-socials'
     | '/api/public/og/$handle'
@@ -816,6 +837,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/ops'
     | '/admin/sepa'
+    | '/admin/subdomains'
     | '/admin/webhooks'
     | '/dashboard/bluesky'
     | '/dashboard/domains'
@@ -837,6 +859,7 @@ export interface FileRouteTypes {
     | '/api/public/auth/$provider'
     | '/api/public/auth/magic-link'
     | '/api/public/badge/$handle'
+    | '/api/public/cron/check-dns'
     | '/api/public/cron/secureshield-billing'
     | '/api/public/cron/sync-socials'
     | '/api/public/og/$handle'
@@ -892,6 +915,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/contact'
     | '/_authenticated/admin/ops'
     | '/_authenticated/admin/sepa'
+    | '/_authenticated/admin/subdomains'
     | '/_authenticated/admin/webhooks'
     | '/_authenticated/dashboard/bluesky'
     | '/_authenticated/dashboard/domains'
@@ -913,6 +937,7 @@ export interface FileRouteTypes {
     | '/api_/public/auth/$provider'
     | '/api_/public/auth/magic-link'
     | '/api_/public/badge/$handle'
+    | '/api_/public/cron/check-dns'
     | '/api_/public/cron/secureshield-billing'
     | '/api_/public/cron/sync-socials'
     | '/api_/public/og/$handle'
@@ -968,6 +993,7 @@ export interface RootRouteChildren {
   ApiPublicAuthProviderRoute: typeof ApiPublicAuthProviderRouteWithChildren
   ApiPublicAuthMagicLinkRoute: typeof ApiPublicAuthMagicLinkRoute
   ApiPublicBadgeHandleRoute: typeof ApiPublicBadgeHandleRoute
+  ApiPublicCronCheckDnsRoute: typeof ApiPublicCronCheckDnsRoute
   ApiPublicCronSecureshieldBillingRoute: typeof ApiPublicCronSecureshieldBillingRoute
   ApiPublicCronSyncSocialsRoute: typeof ApiPublicCronSyncSocialsRoute
   ApiPublicOgHandleRoute: typeof ApiPublicOgHandleRoute
@@ -1312,6 +1338,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSepaRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/subdomains': {
+      id: '/_authenticated/admin/subdomains'
+      path: '/subdomains'
+      fullPath: '/admin/subdomains'
+      preLoaderRoute: typeof AuthenticatedAdminSubdomainsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/webhooks': {
       id: '/_authenticated/admin/webhooks'
       path: '/webhooks'
@@ -1459,6 +1492,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicBadgeHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api_/public/cron/check-dns': {
+      id: '/api_/public/cron/check-dns'
+      path: '/api/public/cron/check-dns'
+      fullPath: '/api/public/cron/check-dns'
+      preLoaderRoute: typeof ApiPublicCronCheckDnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api_/public/cron/secureshield-billing': {
       id: '/api_/public/cron/secureshield-billing'
       path: '/api/public/cron/secureshield-billing'
@@ -1517,6 +1557,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminOpsRoute: typeof AuthenticatedAdminOpsRoute
   AuthenticatedAdminSepaRoute: typeof AuthenticatedAdminSepaRoute
+  AuthenticatedAdminSubdomainsRoute: typeof AuthenticatedAdminSubdomainsRoute
   AuthenticatedAdminWebhooksRoute: typeof AuthenticatedAdminWebhooksRoute
 }
 
@@ -1524,6 +1565,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
   AuthenticatedAdminOpsRoute: AuthenticatedAdminOpsRoute,
   AuthenticatedAdminSepaRoute: AuthenticatedAdminSepaRoute,
+  AuthenticatedAdminSubdomainsRoute: AuthenticatedAdminSubdomainsRoute,
   AuthenticatedAdminWebhooksRoute: AuthenticatedAdminWebhooksRoute,
 }
 
@@ -1681,6 +1723,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAuthProviderRoute: ApiPublicAuthProviderRouteWithChildren,
   ApiPublicAuthMagicLinkRoute: ApiPublicAuthMagicLinkRoute,
   ApiPublicBadgeHandleRoute: ApiPublicBadgeHandleRoute,
+  ApiPublicCronCheckDnsRoute: ApiPublicCronCheckDnsRoute,
   ApiPublicCronSecureshieldBillingRoute: ApiPublicCronSecureshieldBillingRoute,
   ApiPublicCronSyncSocialsRoute: ApiPublicCronSyncSocialsRoute,
   ApiPublicOgHandleRoute: ApiPublicOgHandleRoute,
