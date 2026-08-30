@@ -55,6 +55,8 @@ import { AvatarUpload } from "@/components/settings/AvatarUpload";
 
 import { useAuth } from "@/hooks/useAuth";
 import { useUrlStyle } from "@/hooks/useUrlStyle";
+import { useIdentitySpace } from "@/hooks/useIdentitySpace";
+
 import { effectiveUrlStyle, styledProfilePath, type UrlStyle } from "@/lib/profile-url";
 import {
   AVATAR_FRAMES,
