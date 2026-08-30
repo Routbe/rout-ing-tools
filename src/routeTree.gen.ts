@@ -37,6 +37,7 @@ import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as WifiQrRouteImport } from './routes/wifi-qr'
 import { Route as UsernameSlugRouteImport } from './routes/$username.$slug'
 import { Route as UsernameDonateRouteImport } from './routes/$username.donate'
+import { Route as UsernameTipRouteImport } from './routes/$username.tip'
 import { Route as DotwellKnownAtprotoDidRouteImport } from './routes/[.]well-known.atproto-did'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -71,6 +72,7 @@ import { Route as AuthGitlabCallbackRouteImport } from './routes/auth_.gitlab.ca
 import { Route as AuthMastodonCallbackRouteImport } from './routes/auth_.mastodon.callback'
 import { Route as UUsernameSlugRouteImport } from './routes/u.$username.$slug'
 import { Route as UUsernameDonateRouteImport } from './routes/u.$username.donate'
+import { Route as UUsernameTipRouteImport } from './routes/u.$username.tip'
 import { Route as ApiAuthProviderCallbackRouteImport } from './routes/api_.auth.$provider.callback'
 import { Route as ApiPublicAuthProviderRouteImport } from './routes/api_.public.auth.$provider'
 import { Route as ApiPublicAuthMagicLinkRouteImport } from './routes/api_.public.auth.magic-link'
@@ -218,6 +220,11 @@ const UsernameSlugRoute = UsernameSlugRouteImport.update({
 const UsernameDonateRoute = UsernameDonateRouteImport.update({
   id: '/donate',
   path: '/donate',
+  getParentRoute: () => UsernameRoute,
+} as any)
+const UsernameTipRoute = UsernameTipRouteImport.update({
+  id: '/tip',
+  path: '/tip',
   getParentRoute: () => UsernameRoute,
 } as any)
 const DotwellKnownAtprotoDidRoute = DotwellKnownAtprotoDidRouteImport.update({
@@ -396,6 +403,11 @@ const UUsernameDonateRoute = UUsernameDonateRouteImport.update({
   path: '/donate',
   getParentRoute: () => UUsernameRoute,
 } as any)
+const UUsernameTipRoute = UUsernameTipRouteImport.update({
+  id: '/tip',
+  path: '/tip',
+  getParentRoute: () => UUsernameRoute,
+} as any)
 const ApiAuthProviderCallbackRoute = ApiAuthProviderCallbackRouteImport.update({
   id: '/callback',
   path: '/callback',
@@ -474,6 +486,7 @@ export interface FileRoutesByFullPath {
   '/wifi-qr': typeof WifiQrRoute
   '/$username/$slug': typeof UsernameSlugRoute
   '/$username/donate': typeof UsernameDonateRoute
+  '/$username/tip': typeof UsernameTipRoute
   '/.well-known/atproto-did': typeof DotwellKnownAtprotoDidRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -508,6 +521,7 @@ export interface FileRoutesByFullPath {
   '/auth/mastodon/callback': typeof AuthMastodonCallbackRoute
   '/u/$username/$slug': typeof UUsernameSlugRoute
   '/u/$username/donate': typeof UUsernameDonateRoute
+  '/u/$username/tip': typeof UUsernameTipRoute
   '/api/auth/$provider/callback': typeof ApiAuthProviderCallbackRoute
   '/api/public/auth/$provider': typeof ApiPublicAuthProviderRouteWithChildren
   '/api/public/auth/magic-link': typeof ApiPublicAuthMagicLinkRoute
@@ -546,6 +560,7 @@ export interface FileRoutesByTo {
   '/wifi-qr': typeof WifiQrRoute
   '/$username/$slug': typeof UsernameSlugRoute
   '/$username/donate': typeof UsernameDonateRoute
+  '/$username/tip': typeof UsernameTipRoute
   '/.well-known/atproto-did': typeof DotwellKnownAtprotoDidRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -580,6 +595,7 @@ export interface FileRoutesByTo {
   '/auth/mastodon/callback': typeof AuthMastodonCallbackRoute
   '/u/$username/$slug': typeof UUsernameSlugRoute
   '/u/$username/donate': typeof UUsernameDonateRoute
+  '/u/$username/tip': typeof UUsernameTipRoute
   '/api/auth/$provider/callback': typeof ApiAuthProviderCallbackRoute
   '/api/public/auth/$provider': typeof ApiPublicAuthProviderRouteWithChildren
   '/api/public/auth/magic-link': typeof ApiPublicAuthMagicLinkRoute
@@ -620,6 +636,7 @@ export interface FileRoutesById {
   '/wifi-qr': typeof WifiQrRoute
   '/$username/$slug': typeof UsernameSlugRoute
   '/$username/donate': typeof UsernameDonateRoute
+  '/$username/tip': typeof UsernameTipRoute
   '/.well-known/atproto-did': typeof DotwellKnownAtprotoDidRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -654,6 +671,7 @@ export interface FileRoutesById {
   '/auth_/mastodon/callback': typeof AuthMastodonCallbackRoute
   '/u/$username/$slug': typeof UUsernameSlugRoute
   '/u/$username/donate': typeof UUsernameDonateRoute
+  '/u/$username/tip': typeof UUsernameTipRoute
   '/api_/auth/$provider/callback': typeof ApiAuthProviderCallbackRoute
   '/api_/public/auth/$provider': typeof ApiPublicAuthProviderRouteWithChildren
   '/api_/public/auth/magic-link': typeof ApiPublicAuthMagicLinkRoute
@@ -694,6 +712,7 @@ export interface FileRouteTypes {
     | '/wifi-qr'
     | '/$username/$slug'
     | '/$username/donate'
+    | '/$username/tip'
     | '/.well-known/atproto-did'
     | '/admin'
     | '/dashboard'
@@ -728,6 +747,7 @@ export interface FileRouteTypes {
     | '/auth/mastodon/callback'
     | '/u/$username/$slug'
     | '/u/$username/donate'
+    | '/u/$username/tip'
     | '/api/auth/$provider/callback'
     | '/api/public/auth/$provider'
     | '/api/public/auth/magic-link'
@@ -766,6 +786,7 @@ export interface FileRouteTypes {
     | '/wifi-qr'
     | '/$username/$slug'
     | '/$username/donate'
+    | '/$username/tip'
     | '/.well-known/atproto-did'
     | '/admin'
     | '/dashboard'
@@ -800,6 +821,7 @@ export interface FileRouteTypes {
     | '/auth/mastodon/callback'
     | '/u/$username/$slug'
     | '/u/$username/donate'
+    | '/u/$username/tip'
     | '/api/auth/$provider/callback'
     | '/api/public/auth/$provider'
     | '/api/public/auth/magic-link'
@@ -839,6 +861,7 @@ export interface FileRouteTypes {
     | '/wifi-qr'
     | '/$username/$slug'
     | '/$username/donate'
+    | '/$username/tip'
     | '/.well-known/atproto-did'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
@@ -873,6 +896,7 @@ export interface FileRouteTypes {
     | '/auth_/mastodon/callback'
     | '/u/$username/$slug'
     | '/u/$username/donate'
+    | '/u/$username/tip'
     | '/api_/auth/$provider/callback'
     | '/api_/public/auth/$provider'
     | '/api_/public/auth/magic-link'
@@ -1136,6 +1160,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UsernameDonateRouteImport
       parentRoute: typeof UsernameRoute
     }
+    '/$username/tip': {
+      id: '/$username/tip'
+      path: '/tip'
+      fullPath: '/$username/tip'
+      preLoaderRoute: typeof UsernameTipRouteImport
+      parentRoute: typeof UsernameRoute
+    }
     '/.well-known/atproto-did': {
       id: '/.well-known/atproto-did'
       path: '/.well-known/atproto-did'
@@ -1374,6 +1405,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UUsernameDonateRouteImport
       parentRoute: typeof UUsernameRoute
     }
+    '/u/$username/tip': {
+      id: '/u/$username/tip'
+      path: '/tip'
+      fullPath: '/u/$username/tip'
+      preLoaderRoute: typeof UUsernameTipRouteImport
+      parentRoute: typeof UUsernameRoute
+    }
     '/api_/auth/$provider/callback': {
       id: '/api_/auth/$provider/callback'
       path: '/callback'
@@ -1443,11 +1481,13 @@ declare module '@tanstack/react-router' {
 interface UsernameRouteChildren {
   UsernameSlugRoute: typeof UsernameSlugRoute
   UsernameDonateRoute: typeof UsernameDonateRoute
+  UsernameTipRoute: typeof UsernameTipRoute
 }
 
 const UsernameRouteChildren: UsernameRouteChildren = {
   UsernameSlugRoute: UsernameSlugRoute,
   UsernameDonateRoute: UsernameDonateRoute,
+  UsernameTipRoute: UsernameTipRoute,
 }
 
 const UsernameRouteWithChildren = UsernameRoute._addFileChildren(
@@ -1526,11 +1566,13 @@ const AuthGitlabRouteWithChildren = AuthGitlabRoute._addFileChildren(
 interface UUsernameRouteChildren {
   UUsernameSlugRoute: typeof UUsernameSlugRoute
   UUsernameDonateRoute: typeof UUsernameDonateRoute
+  UUsernameTipRoute: typeof UUsernameTipRoute
 }
 
 const UUsernameRouteChildren: UUsernameRouteChildren = {
   UUsernameSlugRoute: UUsernameSlugRoute,
   UUsernameDonateRoute: UUsernameDonateRoute,
+  UUsernameTipRoute: UUsernameTipRoute,
 }
 
 const UUsernameRouteWithChildren = UUsernameRoute._addFileChildren(

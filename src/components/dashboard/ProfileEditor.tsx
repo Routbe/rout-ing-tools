@@ -15,6 +15,8 @@ import {
   GripVertical,
   Link2,
   Loader2,
+  Lock,
+
   Palette,
   Plus,
   Search,
@@ -55,6 +57,8 @@ import { AvatarUpload } from "@/components/settings/AvatarUpload";
 
 import { useAuth } from "@/hooks/useAuth";
 import { useUrlStyle } from "@/hooks/useUrlStyle";
+import { useIdentitySpace } from "@/hooks/useIdentitySpace";
+
 import { effectiveUrlStyle, styledProfilePath, type UrlStyle } from "@/lib/profile-url";
 import {
   AVATAR_FRAMES,
@@ -176,6 +180,7 @@ function inputHint(kind: string): { prefix?: string; help: string } {
 export function ProfileEditor() {
   const { user } = useAuth();
   const { style: rawUrlStyle, save: saveUrlStylePref } = useUrlStyle();
+
   const loadProfileEditor = useServerFn(getStudioProfile);
   const checkHandle = useServerFn(checkStudioHandle);
   const saveProfile = useServerFn(saveStudioProfile);
@@ -201,6 +206,8 @@ export function ProfileEditor() {
     setPrefs((p) => ({ ...p, [key]: value }));
   const [blocks, setBlocks] = useState<ProfileBlock[]>([]);
   const [verified, setVerified] = useState(false);
+  const { space: identitySpace, select: selectIdentitySpace } = useIdentitySpace(verified);
+
   const [legalName, setLegalName] = useState<string | null>(null);
   const [drawer, setDrawer] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -326,9 +333,13 @@ export function ProfileEditor() {
   };
   const handleProblem = normalized ? handleIssue(normalized, handleCtx) : null;
   const handleOk = isValidHandle(normalized) && !reserved && !handleProblem;
-  // Follow the member's chosen display shape; clean root URLs stay verified-only.
-  const urlStyle = effectiveUrlStyle(rawUrlStyle, verified);
+  // Volg de actieve identiteitsruimte; schone root-URLs blijven Pro-only.
+  const urlStyle = effectiveUrlStyle(
+    identitySpace === "verified" ? "clean" : rawUrlStyle === "clean" || rawUrlStyle === "clean_at" ? "u" : rawUrlStyle,
+    verified,
+  );
   const publicPath = styledProfilePath(claimed ?? "", urlStyle);
+
 
   const visibleTabs = useMemo(() => TABS.filter((t) => !t.verifiedOnly || verified), [verified]);
   // Losing verification (or loading it late) must never leave the studio on a
@@ -1411,42 +1422,74 @@ export function ProfileEditor() {
                   <h2 className="text-lg font-medium">Identiteit, URL &amp; badge</h2>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {verified
-                      ? "Kies hoe je URL eruitziet en wat bezoekers over je identiteit zien."
-                      : "Deze opties komen vrij zodra je account geverifieerd is."}
+                      ? "Eén account, twee publieke ruimtes: je geverifieerde profiel en je privé alias-hub."
+                      : "Je alias-hub is actief. Directe rout.be/ links komen vrij met Pro."}
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <p className="input-label">Naamsvorm van je handle</p>
+                  <p className="input-label">Actieve identiteit</p>
                   <div className="flex flex-wrap gap-2">
                     {(
                       [
-                        { id: "legal", label: "Echte naam", note: "bv. rout.be/delplanche" },
-                        { id: "private", label: "Privé alias", note: "bv. rout.be/u/zotje" },
-                      ] as const
-                    ).map((m) => (
-                      <button
-                        key={m.id}
-                        type="button"
-                        disabled={!verified}
-                        onClick={() => {
-                          setPref("identityMode", m.id);
-                          void saveUrlStylePref(
-                            (m.id === "private" ? "u" : "clean") as UrlStyle,
-                          );
-                        }}
-                        className={cn(
-                          "flex-1 rounded-xl border px-3 py-2 text-left text-xs transition-colors disabled:opacity-50",
-                          prefs.identityMode === m.id
-                            ? "border-primary/50 bg-primary/10"
-                            : "border-border",
-                        )}
-                      >
-                        <span className="block font-medium">{m.label}</span>
-                        <span className="block text-muted-foreground">{m.note}</span>
-                      </button>
-                    ))}
+                        {
+                          id: "legal" as const,
+                          space: "verified" as const,
+                          label: "Echte naam · Directe URL",
+                          note: "bv. rout.be/creatief",
+                          pro: true,
+                        },
+                        {
+                          id: "private" as const,
+                          space: "alias" as const,
+                          label: "Privé alias",
+                          note: "bv. rout.be/u/creatief",
+                          pro: false,
+                        },
+                      ]
+                    ).map((m) => {
+                      const locked = m.pro && !verified;
+                      const active = identitySpace === m.space;
+                      return (
+                        <button
+                          key={m.id}
+                          type="button"
+                          disabled={locked}
+                          aria-disabled={locked}
+                          onClick={() => {
+                            if (locked) return;
+                            setPref("identityMode", m.id);
+                            selectIdentitySpace(m.space);
+                            void saveUrlStylePref((m.space === "alias" ? "u" : "clean") as UrlStyle);
+                          }}
+                          className={cn(
+                            "min-w-[9rem] flex-1 rounded-xl border px-3 py-2 text-left text-xs transition-colors",
+                            locked
+                              ? "cursor-not-allowed border-border opacity-60"
+                              : active
+                                ? "border-primary/50 bg-primary/10"
+                                : "border-border",
+                          )}
+                        >
+                          <span className="flex items-center gap-1.5 font-medium">
+                            {locked && <Lock className="h-3.5 w-3.5" aria-hidden />}
+                            {m.label}
+                            {locked && (
+                              <span className="ml-auto rounded bg-foreground px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase text-background">
+                                Pro
+                              </span>
+                            )}
+                          </span>
+                          <span className="mt-0.5 block text-muted-foreground">{m.note}</span>
+                        </button>
+                      );
+                    })}
                   </div>
+                  {!verified && (
+                    <p className="text-[11px] text-muted-foreground">
+                      Directe rout.be/ links en het blauwe vinkje zijn exclusief voor Pro-accounts.
+                    </p>
+                  )}
                   <p className="text-[11px] text-muted-foreground">
                     Geverifieerde handles krijgen nooit automatische cijfers. In privé-modus hoeft je
                     alias niets met je wettelijke naam te maken te hebben.
@@ -1461,13 +1504,14 @@ export function ProfileEditor() {
                       {styledProfilePath(normalized || "handle", urlStyle)}
                     </span>
                     <span className="shrink-0 text-[10px] uppercase tracking-wide text-muted-foreground">
-                      {prefs.identityMode === "private" ? "Privé alias" : "Echte naam"}
+                      {identitySpace === "verified" ? "Geverifieerd" : "Privé alias"}
                     </span>
                   </div>
                   <p className="text-[11px] text-muted-foreground">
-                    Je URL volgt automatisch je naamsvorm — geen cijfers, geen symbolen.
+                    Je URL volgt automatisch je actieve identiteit — geen cijfers, geen symbolen.
                   </p>
                 </div>
+
 
 
                 <div className="flex items-start justify-between gap-4">
@@ -1537,11 +1581,14 @@ export function ProfileEditor() {
                   </div>
                 )}
               </section>
-              {verified ? (
-                <DonationPanel handle={claimed} urlStyle={rawUrlStyle} verified={verified} />
-              ) : (
-                <VerificationPanel />
-              )}
+              {/* Steunpagina staat er voor iedereen — free én Pro. */}
+              <DonationPanel
+                handle={claimed || normalized || null}
+                urlStyle={urlStyle}
+                verified={verified}
+              />
+              {!verified && <VerificationPanel />}
+
             </>
           )}
 

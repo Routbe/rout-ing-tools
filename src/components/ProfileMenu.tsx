@@ -1,10 +1,21 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { LayoutDashboard, LogOut, Settings, ChevronDown, ShieldCheck, User } from "lucide-react";
+import {
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  ChevronDown,
+  ShieldCheck,
+  User,
+  BadgeCheck,
+  Shield,
+  Sparkles,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -13,10 +24,12 @@ import { useRouterState } from "@tanstack/react-router";
 import { Link, useNavigate } from "@/lib/router-compat";
 import { useUrlStyle } from "@/hooks/useUrlStyle";
 import { styledProfilePath } from "@/lib/profile-url";
+import { useIdentitySpace } from "@/hooks/useIdentitySpace";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin, clearAdminRoleCache } from "@/hooks/useIsAdmin";
 import { UserAvatar } from "@/components/UserAvatar";
 import { getMyAccount } from "@/lib/account.functions";
+
 
 /**
  * Account context only. Platform tools live in the burger menu so the two
@@ -25,6 +38,7 @@ import { getMyAccount } from "@/lib/account.functions";
 export function ProfileMenu() {
   const { user, signOut, loading } = useAuth();
   const { style: urlStyle } = useUrlStyle();
+
   const nav = useNavigate();
   const [fullName, setFullName] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
@@ -34,6 +48,9 @@ export function ProfileMenu() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const { isAdmin } = useIsAdmin();
   const loadAccount = useServerFn(getMyAccount);
+  const dualIdentity = verified || tier === "pro" || earlyBeliever;
+  const { space, select } = useIdentitySpace(dualIdentity);
+
 
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -107,6 +124,9 @@ export function ProfileMenu() {
       : "Free";
   const isPaidTier = tierLabel !== "Free";
   const profilePath = styledProfilePath(handle, urlStyle);
+  const verifiedPath = `/${handle}`;
+  const aliasPath = `/u/${handle}`;
+
 
   return (
     <div className="flex items-center gap-3 sm:gap-4">
@@ -147,6 +167,71 @@ export function ProfileMenu() {
             <p className="truncate text-xs text-muted-foreground">{user.email}</p>
           </div>
           <DropdownMenuSeparator />
+          <DropdownMenuLabel className="text-[11px] uppercase tracking-wide text-muted-foreground">
+            Actieve identiteit
+          </DropdownMenuLabel>
+          {dualIdentity ? (
+            <>
+              <DropdownMenuItem
+                onClick={() => {
+                  select("verified");
+                  nav("/studio");
+                }}
+                className="gap-2"
+              >
+                <BadgeCheck
+                  className={
+                    "h-4 w-4 shrink-0 " +
+                    (space === "verified" ? "text-primary" : "text-muted-foreground")
+                  }
+                  aria-hidden
+                />
+                <div className="flex min-w-0 flex-col">
+                  <span>Geverifieerd</span>
+                  <span className="truncate text-[11px] text-muted-foreground">
+                    rout.be{verifiedPath}
+                  </span>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  select("alias");
+                  nav("/studio");
+                }}
+                className="gap-2"
+              >
+                <Shield
+                  className={
+                    "h-4 w-4 shrink-0 " +
+                    (space === "alias" ? "text-primary" : "text-muted-foreground")
+                  }
+                  aria-hidden
+                />
+                <div className="flex min-w-0 flex-col">
+                  <span>Privé alias</span>
+                  <span className="truncate text-[11px] text-muted-foreground">
+                    rout.be{aliasPath}
+                  </span>
+                </div>
+              </DropdownMenuItem>
+            </>
+          ) : (
+            <div className="px-2 pb-2">
+              <div className="flex items-center gap-2 rounded-lg border border-border px-2 py-1.5">
+                <Shield className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+                <span className="truncate font-mono text-[11px]">rout.be{aliasPath}</span>
+              </div>
+              <Button
+                size="sm"
+                className="mt-2 w-full gap-1.5"
+                onClick={() => nav("/claim")}
+              >
+                <Sparkles className="h-3.5 w-3.5" aria-hidden /> Upgrade naar Dual Identity
+              </Button>
+            </div>
+          )}
+          <DropdownMenuSeparator />
+
           <DropdownMenuItem onClick={() => nav("/studio")} className="gap-2">
             <User className="h-4 w-4 shrink-0" aria-hidden />
             <div className="flex flex-col">
