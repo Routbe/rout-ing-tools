@@ -15,6 +15,8 @@ import {
   GripVertical,
   Link2,
   Loader2,
+  Lock,
+
   Palette,
   Plus,
   Search,
