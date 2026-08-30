@@ -130,6 +130,8 @@ export function SubdomainPanel() {
   const onClaimRoot = async () => {
     if (!user) return;
     setClaiming(true);
+    setConflict(false);
+    setMailDiag(null);
     try {
       const res = await fetch("/api/claim-root", {
         method: "POST",
@@ -149,13 +151,20 @@ export function SubdomainPanel() {
         subdomain?: string;
         admin_email?: string;
         user_email?: string;
+        admin_mail_error?: string;
+        user_mail_error?: string;
         status?: RootStatus;
       };
 
+      if (res.status === 401) {
+        toast.error("⚠️ Je sessie is verlopen. Log opnieuw in om een claim in te dienen.");
+        return;
+      }
       if (res.status === 409) {
+        setConflict(true);
         setTier("root_lifetime");
         setRootStatus(data.status ?? "pending_dns");
-        toast.info(data.error ?? "Er loopt al een aanvraag voor dit account.");
+        void refreshClaims();
         return;
       }
       if (!res.ok || !data.success) {
@@ -166,13 +175,16 @@ export function SubdomainPanel() {
       // Directe lokale state-update zodat de amberbanner meteen verschijnt.
       setTier("root_lifetime");
       setRootStatus("pending_dns");
+      setMailDiag({ admin: data.admin_email ?? "onbekend", user: data.user_email ?? "onbekend" });
       toast.success(`Aanvraag ontvangen voor ${data.subdomain ?? `${handle}.rout.be`}`);
       if (data.user_email && data.user_email !== "sent") {
         toast.warning("Bevestigingsmail kon niet verzonden worden — we volgen dit handmatig op.");
       }
+      void refreshClaims();
     } catch {
       toast.error("Aanvraag mislukt. Probeer het later opnieuw.");
     } finally {
+
       setClaiming(false);
     }
   };
