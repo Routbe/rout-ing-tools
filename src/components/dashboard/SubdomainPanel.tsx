@@ -78,20 +78,53 @@ export function SubdomainPanel() {
   const bare = (active ?? `${handle}.u.rout.be`).replace(/^https?:\/\//i, "").replace(/\/.*$/, "");
 
   const onClaimRoot = async () => {
+    if (!user) return;
     setClaiming(true);
     try {
-      const res = await claimRoot({});
-      if (res.ok) {
+      const res = await fetch("/api/claim-root", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          userId: user.id,
+          handle,
+          email: user.email,
+          userName:
+            (user.user_metadata?.["full_name"] as string | undefined)?.trim() || handle,
+        }),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        success?: boolean;
+        error?: string;
+        subdomain?: string;
+        admin_email?: string;
+        user_email?: string;
+        status?: RootStatus;
+      };
+
+      if (res.status === 409) {
         setTier("root_lifetime");
-        setRootStatus(res.status);
-        toast.success(`Aanvraag ontvangen voor ${res.subdomain}`);
-      } else {
-        toast.error(res.error);
+        setRootStatus(data.status ?? "pending_dns");
+        toast.info(data.error ?? "Er loopt al een aanvraag voor dit account.");
+        return;
+      }
+      if (!res.ok || !data.success) {
+        toast.error(data.error ?? "Aanvraag mislukt. Probeer het later opnieuw.");
+        return;
+      }
+
+      // Directe lokale state-update zodat de amberbanner meteen verschijnt.
+      setTier("root_lifetime");
+      setRootStatus("pending_dns");
+      toast.success(`Aanvraag ontvangen voor ${data.subdomain ?? `${handle}.rout.be`}`);
+      if (data.user_email && data.user_email !== "sent") {
+        toast.warning("Bevestigingsmail kon niet verzonden worden — we volgen dit handmatig op.");
       }
     } catch {
       toast.error("Aanvraag mislukt. Probeer het later opnieuw.");
+    } finally {
+      setClaiming(false);
     }
-    setClaiming(false);
   };
 
   return (
