@@ -49,6 +49,9 @@ export interface ProfileDisplayPrefs {
   bioNl: string | null;
   bioEn: string | null;
   bioFr: string | null;
+  /** Toont de "Contact opslaan" (vCard) knop op het publieke profiel. */
+  showVcardButton: boolean;
+
 }
 
 export const DEFAULT_DISPLAY_PREFS: ProfileDisplayPrefs = {
@@ -75,6 +78,7 @@ export const DEFAULT_DISPLAY_PREFS: ProfileDisplayPrefs = {
   bioNl: null,
   bioEn: null,
   bioFr: null,
+  showVcardButton: true,
 };
 
 export const AVATAR_FRAMES: { id: AvatarFrame; label: string }[] = [
@@ -188,6 +192,7 @@ export function parseDisplayPrefs(raw: unknown): ProfileDisplayPrefs {
     bioNl: textOrNull(r["bioNl"], 500),
     bioEn: textOrNull(r["bioEn"], 500),
     bioFr: textOrNull(r["bioFr"], 500),
+    showVcardButton: r["showVcardButton"] === undefined ? true : Boolean(r["showVcardButton"]),
   };
 }
 

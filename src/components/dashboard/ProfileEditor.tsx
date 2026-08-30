@@ -1,3 +1,4 @@
+import { QrCode } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { SocialPlatformIcon } from "@/lib/social-icons";
@@ -99,7 +100,6 @@ import {
 import { SubdomainPanel } from "@/components/dashboard/SubdomainPanel";
 import { BadgesPanel } from "@/components/dashboard/BadgesPanel";
 import { SocialVerifyPanel } from "@/components/dashboard/SocialVerifyPanel";
-import { ProfileQrCard } from "@/components/dashboard/ProfileQrCard";
 import { ReferralPanel } from "@/components/dashboard/ReferralPanel";
 import { ReferralAnalytics } from "@/components/dashboard/ReferralAnalytics";
 import { BadgeActivityPanel } from "@/components/dashboard/BadgeActivityPanel";
@@ -859,11 +859,21 @@ export function ProfileEditor() {
 
               <SocialVerifyPanel handle={normalized || handle} />
 
-              <ProfileQrCard
-                handle={normalized || handle}
-                urlStyle={urlStyle}
-                theme={theme}
-              />
+              {/* Eén bron van waarheid: QR-styling gebeurt in de generator. */}
+              <section className="space-y-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
+                <h2 className="text-lg font-medium">Profiel-QR</h2>
+                <p className="text-sm text-muted-foreground">
+                  Je profiel-QR ontwerp je in de QR-generator: kleuren, patronen, hoeken en logo.
+                  De code verwijst altijd naar je profiel, dus geprinte kaartjes blijven geldig.
+                </p>
+                <a
+                  href="/qr?type=profile_hub"
+                  className="inline-flex h-9 items-center gap-2 rounded-xl bg-foreground px-3 text-xs font-medium text-background transition-opacity hover:opacity-90"
+                >
+                  <QrCode className="h-3.5 w-3.5" aria-hidden /> Stijl &amp; download profiel-QR
+                </a>
+              </section>
+
 
               <BadgesPanel />
               <BadgeActivityPanel />
@@ -1201,7 +1211,21 @@ export function ProfileEditor() {
                     onCheckedChange={(v) => setPref("showWatermark", v)}
                   />
                 </div>
+                <div className="flex items-start justify-between gap-4 border-t border-border pt-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">&ldquo;Contact opslaan&rdquo;-knop</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Bezoekers bewaren je profiel als contactkaart (vCard) in hun adresboek.
+                    </p>
+                  </div>
+                  <Switch
+                    aria-label="Contact opslaan-knop tonen"
+                    checked={prefs.showVcardButton}
+                    onCheckedChange={(v) => setPref("showVcardButton", v)}
+                  />
+                </div>
               </section>
+
             </>
           )}
 

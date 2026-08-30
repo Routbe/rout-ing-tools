@@ -124,6 +124,17 @@ const Index = () => {
   const setRichField = (key: string, val: string) =>
     setRichValues((prev) => ({ ...prev, [qrType]: { ...(prev[qrType] ?? {}), [key]: val } }));
 
+  /**
+   * Diepe link vanuit Studio: `/qr?type=profile_hub` opent de generator meteen
+   * op de profielhub, zodat Studio geen eigen QR-widget hoeft te dupliceren.
+   */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const requested = new URLSearchParams(window.location.search).get("type");
+    if (requested === "profile_hub" || requested === "social") setQrType("social");
+  }, []);
+
+
   const [frameId, setFrameId] = useState<string | null>(null);
   const [frameLabel, setFrameLabel] = useState("");
   const [frameFont, setFrameFont] = useState("sans");

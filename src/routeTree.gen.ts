@@ -25,6 +25,7 @@ import { Route as HubRouteImport } from './routes/hub'
 import { Route as IbanQrRouteImport } from './routes/iban-qr'
 import { Route as ManifestoRouteImport } from './routes/manifesto'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as QrRouteImport } from './routes/qr'
 import { Route as SelfHostingRouteImport } from './routes/self-hosting'
 import { Route as SignatureRouteImport } from './routes/signature'
 import { Route as SovereigntyRouteImport } from './routes/sovereignty'
@@ -157,6 +158,11 @@ const ManifestoRoute = ManifestoRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QrRoute = QrRouteImport.update({
+  id: '/qr',
+  path: '/qr',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SelfHostingRoute = SelfHostingRouteImport.update({
@@ -456,6 +462,7 @@ export interface FileRoutesByFullPath {
   '/iban-qr': typeof IbanQrRoute
   '/manifesto': typeof ManifestoRoute
   '/privacy': typeof PrivacyRoute
+  '/qr': typeof QrRoute
   '/self-hosting': typeof SelfHostingRoute
   '/signature': typeof SignatureRoute
   '/sovereignty': typeof SovereigntyRoute
@@ -527,6 +534,7 @@ export interface FileRoutesByTo {
   '/iban-qr': typeof IbanQrRoute
   '/manifesto': typeof ManifestoRoute
   '/privacy': typeof PrivacyRoute
+  '/qr': typeof QrRoute
   '/self-hosting': typeof SelfHostingRoute
   '/signature': typeof SignatureRoute
   '/sovereignty': typeof SovereigntyRoute
@@ -600,6 +608,7 @@ export interface FileRoutesById {
   '/iban-qr': typeof IbanQrRoute
   '/manifesto': typeof ManifestoRoute
   '/privacy': typeof PrivacyRoute
+  '/qr': typeof QrRoute
   '/self-hosting': typeof SelfHostingRoute
   '/signature': typeof SignatureRoute
   '/sovereignty': typeof SovereigntyRoute
@@ -673,6 +682,7 @@ export interface FileRouteTypes {
     | '/iban-qr'
     | '/manifesto'
     | '/privacy'
+    | '/qr'
     | '/self-hosting'
     | '/signature'
     | '/sovereignty'
@@ -744,6 +754,7 @@ export interface FileRouteTypes {
     | '/iban-qr'
     | '/manifesto'
     | '/privacy'
+    | '/qr'
     | '/self-hosting'
     | '/signature'
     | '/sovereignty'
@@ -816,6 +827,7 @@ export interface FileRouteTypes {
     | '/iban-qr'
     | '/manifesto'
     | '/privacy'
+    | '/qr'
     | '/self-hosting'
     | '/signature'
     | '/sovereignty'
@@ -889,6 +901,7 @@ export interface RootRouteChildren {
   IbanQrRoute: typeof IbanQrRoute
   ManifestoRoute: typeof ManifestoRoute
   PrivacyRoute: typeof PrivacyRoute
+  QrRoute: typeof QrRoute
   SelfHostingRoute: typeof SelfHostingRoute
   SignatureRoute: typeof SignatureRoute
   SovereigntyRoute: typeof SovereigntyRoute
@@ -1037,6 +1050,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qr': {
+      id: '/qr'
+      path: '/qr'
+      fullPath: '/qr'
+      preLoaderRoute: typeof QrRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/self-hosting': {
@@ -1559,6 +1579,7 @@ const rootRouteChildren: RootRouteChildren = {
   IbanQrRoute: IbanQrRoute,
   ManifestoRoute: ManifestoRoute,
   PrivacyRoute: PrivacyRoute,
+  QrRoute: QrRoute,
   SelfHostingRoute: SelfHostingRoute,
   SignatureRoute: SignatureRoute,
   SovereigntyRoute: SovereigntyRoute,

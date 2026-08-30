@@ -1194,12 +1194,36 @@ export default function Admin() {
   if (allowed !== true) {
     return (
       <AppLayout>
-        <div className="flex min-h-[50vh] items-center justify-center text-sm text-muted-foreground">
-          {allowed === false ? "Not authorised." : <Loader2 className="h-4 w-4 animate-spin" />}
-        </div>
+        {allowed === false ? (
+          <div className="flex min-h-[50vh] items-center justify-center text-sm text-muted-foreground">
+            Niet gemachtigd.
+          </div>
+        ) : (
+          /* Skeletonkaarten i.p.v. een kale spinner: de console voelt meteen "aanwezig". */
+          <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-8" aria-busy="true">
+            <div className="h-7 w-56 animate-pulse rounded-lg bg-muted" />
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="rounded-2xl border border-border bg-card p-4">
+                  <div className="h-3 w-24 animate-pulse rounded bg-muted" />
+                  <div className="mt-3 h-7 w-16 animate-pulse rounded bg-muted" />
+                </div>
+              ))}
+            </div>
+            {[0, 1].map((i) => (
+              <div key={i} className="space-y-3 rounded-2xl border border-border bg-card p-4">
+                <div className="h-4 w-40 animate-pulse rounded bg-muted" />
+                {[0, 1, 2, 3].map((r) => (
+                  <div key={r} className="h-9 animate-pulse rounded-lg bg-muted/70" />
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
       </AppLayout>
     );
   }
+
 
   return (
     <AppLayout>
