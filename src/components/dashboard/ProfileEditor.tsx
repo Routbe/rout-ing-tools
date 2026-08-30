@@ -1579,11 +1579,14 @@ export function ProfileEditor() {
                   </div>
                 )}
               </section>
-              {verified ? (
-                <DonationPanel handle={claimed} urlStyle={rawUrlStyle} verified={verified} />
-              ) : (
-                <VerificationPanel />
-              )}
+              {/* Steunpagina staat er voor iedereen — free én Pro. */}
+              <DonationPanel
+                handle={claimed || normalized || null}
+                urlStyle={urlStyle}
+                verified={verified}
+              />
+              {!verified && <VerificationPanel />}
+
             </>
           )}
 
