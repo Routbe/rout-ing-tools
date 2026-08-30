@@ -59,7 +59,7 @@ export default function AdminSubdomains() {
   useEffect(() => {
     if (loading) return;
     if (!user) {
-      void nav({ to: "/" });
+      nav("/", { replace: true });
       return;
     }
     void (async () => {
@@ -68,11 +68,11 @@ export default function AdminSubdomains() {
         if (res?.isAdmin) setAllowed(true);
         else {
           setAllowed(false);
-          void nav({ to: "/" });
+          nav("/", { replace: true });
         }
       } catch {
         setAllowed(false);
-        void nav({ to: "/" });
+        nav("/", { replace: true });
       }
     })();
   }, [user, loading, checkAdmin, nav]);
@@ -81,7 +81,7 @@ export default function AdminSubdomains() {
     setFetching(true);
     try {
       const data = await loadClaims({ data: { status, search: search.trim() } });
-      setRows(data ?? []);
+      setRows((data ?? []) as Claim[]);
     } catch {
       toast.error("Kon de claim-audit niet laden.");
       setRows([]);
@@ -277,7 +277,7 @@ export default function AdminSubdomains() {
                         <tr key={`${row.id}-detail`} className="border-t border-border bg-muted/30">
                           <td colSpan={7} className="px-3 py-3">
                             <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-background p-3 text-[11px]">
-                              {JSON.stringify(row.errorPayload ?? {}, null, 2)}
+                              {row.errorPayload ?? "—"}
                             </pre>
                           </td>
                         </tr>

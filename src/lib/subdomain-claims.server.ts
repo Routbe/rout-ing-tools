@@ -13,7 +13,7 @@ export type ClaimRow = {
   requestedSubdomain: string;
   adminMailStatus: string;
   userMailStatus: string;
-  errorPayload: unknown;
+  errorPayload: string | null;
   status: string;
   rootStatus: string | null;
   dnsPromotedAt: string | null;
@@ -30,7 +30,12 @@ function toRow(r: Record<string, unknown>): ClaimRow {
     requestedSubdomain: String(r["requested_subdomain"]),
     adminMailStatus: String(r["admin_mail_status"]),
     userMailStatus: String(r["user_mail_status"]),
-    errorPayload: r["error_payload"] ?? null,
+    errorPayload:
+      r["error_payload"] == null
+        ? null
+        : typeof r["error_payload"] === "string"
+          ? (r["error_payload"] as string)
+          : JSON.stringify(r["error_payload"]),
     status: String(r["status"] ?? "pending_dns"),
     rootStatus: (r["root_subdomain_status"] as string | null) ?? null,
     dnsPromotedAt: (r["dns_promoted_at"] as string | null) ?? null,

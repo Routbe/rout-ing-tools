@@ -77,7 +77,7 @@ export function SubdomainPanel() {
 
   const refreshClaims = useCallback(async () => {
     try {
-      setClaims((await loadClaims({})) ?? []);
+      setClaims(((await loadClaims({})) ?? []) as ClaimHistory[]);
     } catch {
       /* claim-historie is optioneel */
     }
@@ -306,9 +306,7 @@ export function SubdomainPanel() {
                   <div className="space-y-1.5">
                     <p className="text-[11px] text-destructive">
                       Een e-mailmelding kon niet verstuurd worden
-                      {typeof c.errorPayload === "object" && c.errorPayload
-                        ? ` — ${JSON.stringify(c.errorPayload).slice(0, 160)}`
-                        : ""}
+                      {c.errorPayload ? ` — ${c.errorPayload.slice(0, 160)}` : ""}
                       .
                     </p>
                     <Button
