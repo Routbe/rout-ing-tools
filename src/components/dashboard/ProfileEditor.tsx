@@ -326,9 +326,13 @@ export function ProfileEditor() {
   };
   const handleProblem = normalized ? handleIssue(normalized, handleCtx) : null;
   const handleOk = isValidHandle(normalized) && !reserved && !handleProblem;
-  // Follow the member's chosen display shape; clean root URLs stay verified-only.
-  const urlStyle = effectiveUrlStyle(rawUrlStyle, verified);
+  // Volg de actieve identiteitsruimte; schone root-URLs blijven Pro-only.
+  const urlStyle = effectiveUrlStyle(
+    identitySpace === "verified" ? "clean" : rawUrlStyle === "clean" || rawUrlStyle === "clean_at" ? "u" : rawUrlStyle,
+    verified,
+  );
   const publicPath = styledProfilePath(claimed ?? "", urlStyle);
+
 
   const visibleTabs = useMemo(() => TABS.filter((t) => !t.verifiedOnly || verified), [verified]);
   // Losing verification (or loading it late) must never leave the studio on a
