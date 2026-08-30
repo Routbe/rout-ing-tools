@@ -44,6 +44,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDomainsRouteImport } from './routes/_authenticated/domains'
 import { Route as AuthenticatedMyDataRouteImport } from './routes/_authenticated/my-data'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as ApiClaimRootRouteImport } from './routes/api/claim-root'
 import { Route as ApiPaymentStatusRouteImport } from './routes/api_.payment-status'
 import { Route as AuthCallbackRouteImport } from './routes/auth_.callback'
 import { Route as AuthGitlabRouteImport } from './routes/auth_.gitlab'
@@ -257,6 +258,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const ApiClaimRootRoute = ApiClaimRootRouteImport.update({
+  id: '/claim-root',
+  path: '/claim-root',
+  getParentRoute: () => ApiRoute,
+} as any)
 const ApiPaymentStatusRoute = ApiPaymentStatusRouteImport.update({
   id: '/api_/payment-status',
   path: '/api/payment-status',
@@ -462,7 +468,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$username': typeof UsernameRouteWithChildren
   '/about': typeof AboutRoute
-  '/api': typeof ApiRoute
+  '/api': typeof ApiRouteWithChildren
   '/auth': typeof AuthRoute
   '/batch': typeof BatchRoute
   '/card': typeof CardRoute
@@ -493,6 +499,7 @@ export interface FileRoutesByFullPath {
   '/domains': typeof AuthenticatedDomainsRoute
   '/my-data': typeof AuthenticatedMyDataRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/api/claim-root': typeof ApiClaimRootRoute
   '/api/payment-status': typeof ApiPaymentStatusRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/gitlab': typeof AuthGitlabRouteWithChildren
@@ -536,7 +543,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$username': typeof UsernameRouteWithChildren
   '/about': typeof AboutRoute
-  '/api': typeof ApiRoute
+  '/api': typeof ApiRouteWithChildren
   '/auth': typeof AuthRoute
   '/batch': typeof BatchRoute
   '/card': typeof CardRoute
@@ -567,6 +574,7 @@ export interface FileRoutesByTo {
   '/domains': typeof AuthenticatedDomainsRoute
   '/my-data': typeof AuthenticatedMyDataRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/api/claim-root': typeof ApiClaimRootRoute
   '/api/payment-status': typeof ApiPaymentStatusRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/gitlab': typeof AuthGitlabRouteWithChildren
@@ -612,7 +620,7 @@ export interface FileRoutesById {
   '/$username': typeof UsernameRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/about': typeof AboutRoute
-  '/api': typeof ApiRoute
+  '/api': typeof ApiRouteWithChildren
   '/auth': typeof AuthRoute
   '/batch': typeof BatchRoute
   '/card': typeof CardRoute
@@ -643,6 +651,7 @@ export interface FileRoutesById {
   '/_authenticated/domains': typeof AuthenticatedDomainsRoute
   '/_authenticated/my-data': typeof AuthenticatedMyDataRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/api/claim-root': typeof ApiClaimRootRoute
   '/api_/payment-status': typeof ApiPaymentStatusRoute
   '/auth_/callback': typeof AuthCallbackRoute
   '/auth_/gitlab': typeof AuthGitlabRouteWithChildren
@@ -719,6 +728,7 @@ export interface FileRouteTypes {
     | '/domains'
     | '/my-data'
     | '/settings'
+    | '/api/claim-root'
     | '/api/payment-status'
     | '/auth/callback'
     | '/auth/gitlab'
@@ -793,6 +803,7 @@ export interface FileRouteTypes {
     | '/domains'
     | '/my-data'
     | '/settings'
+    | '/api/claim-root'
     | '/api/payment-status'
     | '/auth/callback'
     | '/auth/gitlab'
@@ -868,6 +879,7 @@ export interface FileRouteTypes {
     | '/_authenticated/domains'
     | '/_authenticated/my-data'
     | '/_authenticated/settings'
+    | '/api/claim-root'
     | '/api_/payment-status'
     | '/auth_/callback'
     | '/auth_/gitlab'
@@ -913,7 +925,7 @@ export interface RootRouteChildren {
   UsernameRoute: typeof UsernameRouteWithChildren
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AboutRoute: typeof AboutRoute
-  ApiRoute: typeof ApiRoute
+  ApiRoute: typeof ApiRouteWithChildren
   AuthRoute: typeof AuthRoute
   BatchRoute: typeof BatchRoute
   CardRoute: typeof CardRoute
@@ -1208,6 +1220,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/claim-root': {
+      id: '/api/claim-root'
+      path: '/claim-root'
+      fullPath: '/api/claim-root'
+      preLoaderRoute: typeof ApiClaimRootRouteImport
+      parentRoute: typeof ApiRoute
     }
     '/api_/payment-status': {
       id: '/api_/payment-status'
@@ -1551,6 +1570,16 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface ApiRouteChildren {
+  ApiClaimRootRoute: typeof ApiClaimRootRoute
+}
+
+const ApiRouteChildren: ApiRouteChildren = {
+  ApiClaimRootRoute: ApiClaimRootRoute,
+}
+
+const ApiRouteWithChildren = ApiRoute._addFileChildren(ApiRouteChildren)
+
 interface AuthGitlabRouteChildren {
   AuthGitlabCallbackRoute: typeof AuthGitlabCallbackRoute
 }
@@ -1609,7 +1638,7 @@ const rootRouteChildren: RootRouteChildren = {
   UsernameRoute: UsernameRouteWithChildren,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AboutRoute: AboutRoute,
-  ApiRoute: ApiRoute,
+  ApiRoute: ApiRouteWithChildren,
   AuthRoute: AuthRoute,
   BatchRoute: BatchRoute,
   CardRoute: CardRoute,
