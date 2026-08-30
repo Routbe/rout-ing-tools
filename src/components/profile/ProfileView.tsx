@@ -212,8 +212,10 @@ export function ProfileView({
         )}
 
         {/* vCard: bezoekers bewaren het profiel meteen in hun adresboek. */}
+        {prefs.showVcardButton && (
         <button
           type="button"
+
           onClick={() =>
             downloadVCard({
               handle: profile.username ?? "",
@@ -236,6 +238,8 @@ export function ProfileView({
         >
           <UserPlus className="h-3.5 w-3.5" aria-hidden /> Contact opslaan
         </button>
+        )}
+
 
         <BadgeShowcase userId={profile.id} theme={t} />
 

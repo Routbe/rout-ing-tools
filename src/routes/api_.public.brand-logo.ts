@@ -24,26 +24,37 @@ export const Route = createFileRoute("/api_/public/brand-logo")({
           return new Response("Invalid domain", { status: 400 });
         }
 
-        try {
-          const upstream = await fetch(
-            `https://icons.duckduckgo.com/ip3/${encodeURIComponent(domain)}.ico`,
-            { headers: { accept: "image/*" } },
-          );
-          const type = upstream.headers.get("content-type") ?? "";
-          if (!upstream.ok || !type.startsWith("image/")) {
-            return new Response("Not found", { status: 404 });
+        /**
+         * Drietrapsraket: DuckDuckGo → Google favicon (256px) → Unavatar.
+         * Zolang één bron een echte afbeelding levert, is dit geen fout.
+         */
+        const sources = [
+          `https://icons.duckduckgo.com/ip3/${encodeURIComponent(domain)}.ico`,
+          `https://www.google.com/s2/favicons?sz=256&domain=${encodeURIComponent(domain)}`,
+          `https://unavatar.io/${encodeURIComponent(domain)}?fallback=false`,
+        ];
+
+        for (const source of sources) {
+          try {
+            const upstream = await fetch(source, { headers: { accept: "image/*" } });
+            const type = upstream.headers.get("content-type") ?? "";
+            if (!upstream.ok || !type.startsWith("image/")) continue;
+            const bytes = await upstream.arrayBuffer();
+            if (bytes.byteLength < 64) continue;
+            return new Response(bytes, {
+              status: 200,
+              headers: {
+                "content-type": type,
+                "cache-control": "public, max-age=86400",
+                "access-control-allow-origin": "*",
+              },
+            });
+          } catch {
+            // Volgende bron proberen.
           }
-          return new Response(await upstream.arrayBuffer(), {
-            status: 200,
-            headers: {
-              "content-type": type,
-              "cache-control": "public, max-age=86400",
-              "access-control-allow-origin": "*",
-            },
-          });
-        } catch {
-          return new Response("Upstream error", { status: 502 });
         }
+        return new Response("Not found", { status: 404 });
+
       },
     },
   },
