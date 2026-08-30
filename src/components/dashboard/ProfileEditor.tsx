@@ -202,6 +202,8 @@ export function ProfileEditor() {
     setPrefs((p) => ({ ...p, [key]: value }));
   const [blocks, setBlocks] = useState<ProfileBlock[]>([]);
   const [verified, setVerified] = useState(false);
+  const { space: identitySpace, select: selectIdentitySpace } = useIdentitySpace(verified);
+
   const [legalName, setLegalName] = useState<string | null>(null);
   const [drawer, setDrawer] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
