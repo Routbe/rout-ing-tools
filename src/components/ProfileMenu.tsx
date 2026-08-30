@@ -1,10 +1,21 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { LayoutDashboard, LogOut, Settings, ChevronDown, ShieldCheck, User } from "lucide-react";
+import {
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  ChevronDown,
+  ShieldCheck,
+  User,
+  BadgeCheck,
+  Shield,
+  Sparkles,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -13,10 +24,12 @@ import { useRouterState } from "@tanstack/react-router";
 import { Link, useNavigate } from "@/lib/router-compat";
 import { useUrlStyle } from "@/hooks/useUrlStyle";
 import { styledProfilePath } from "@/lib/profile-url";
+import { useIdentitySpace } from "@/hooks/useIdentitySpace";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin, clearAdminRoleCache } from "@/hooks/useIsAdmin";
 import { UserAvatar } from "@/components/UserAvatar";
 import { getMyAccount } from "@/lib/account.functions";
+
 
 /**
  * Account context only. Platform tools live in the burger menu so the two
