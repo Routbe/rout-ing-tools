@@ -23,6 +23,23 @@ const TIER_LABEL: Record<Tier, string> = {
   root_lifetime: "Root (levenslang)",
 };
 
+/** Compacte diagnostische badge voor de Brevo-verzendstatus. */
+function MailStatusBadge({ label, status }: { label: string; status: string }) {
+  const ok = status === "sent";
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium",
+        ok
+          ? "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300"
+          : "bg-destructive/15 text-destructive",
+      )}
+    >
+      {label}: {status}
+    </span>
+  );
+}
+
 /**
  * Domeininstellingen: het actieve subdomein per tier (gratis `*.u.rout.be`,
  * pro `*.r.rout.be`, root `*.rout.be`), plus de root-add-on aanvraag en de
