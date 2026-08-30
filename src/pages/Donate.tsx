@@ -252,6 +252,11 @@ export default function Donate() {
             <p className="text-center text-[11px] text-[#f4efe4]/40">
               Apple&nbsp;Pay · Google&nbsp;Pay · Bancontact · iDEAL · kaart — beveiligd via Stripe.
             </p>
+            <p className="text-center text-[11px] leading-relaxed text-[#f4efe4]/35">
+              ROUT faciliteert de directe verbinding met het betaalaccount van {title}. Eventuele
+              fooien vallen onder de fiscale verantwoordelijkheid van de ontvanger.
+            </p>
+
           </section>
         )}
       </div>
