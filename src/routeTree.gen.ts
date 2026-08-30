@@ -71,6 +71,7 @@ import { Route as AuthGitlabCallbackRouteImport } from './routes/auth_.gitlab.ca
 import { Route as AuthMastodonCallbackRouteImport } from './routes/auth_.mastodon.callback'
 import { Route as UUsernameSlugRouteImport } from './routes/u.$username.$slug'
 import { Route as UUsernameDonateRouteImport } from './routes/u.$username.donate'
+import { Route as UUsernameTipRouteImport } from './routes/u.$username.tip'
 import { Route as ApiAuthProviderCallbackRouteImport } from './routes/api_.auth.$provider.callback'
 import { Route as ApiPublicAuthProviderRouteImport } from './routes/api_.public.auth.$provider'
 import { Route as ApiPublicAuthMagicLinkRouteImport } from './routes/api_.public.auth.magic-link'
@@ -396,6 +397,11 @@ const UUsernameDonateRoute = UUsernameDonateRouteImport.update({
   path: '/donate',
   getParentRoute: () => UUsernameRoute,
 } as any)
+const UUsernameTipRoute = UUsernameTipRouteImport.update({
+  id: '/tip',
+  path: '/tip',
+  getParentRoute: () => UUsernameRoute,
+} as any)
 const ApiAuthProviderCallbackRoute = ApiAuthProviderCallbackRouteImport.update({
   id: '/callback',
   path: '/callback',
@@ -508,6 +514,7 @@ export interface FileRoutesByFullPath {
   '/auth/mastodon/callback': typeof AuthMastodonCallbackRoute
   '/u/$username/$slug': typeof UUsernameSlugRoute
   '/u/$username/donate': typeof UUsernameDonateRoute
+  '/u/$username/tip': typeof UUsernameTipRoute
   '/api/auth/$provider/callback': typeof ApiAuthProviderCallbackRoute
   '/api/public/auth/$provider': typeof ApiPublicAuthProviderRouteWithChildren
   '/api/public/auth/magic-link': typeof ApiPublicAuthMagicLinkRoute
@@ -580,6 +587,7 @@ export interface FileRoutesByTo {
   '/auth/mastodon/callback': typeof AuthMastodonCallbackRoute
   '/u/$username/$slug': typeof UUsernameSlugRoute
   '/u/$username/donate': typeof UUsernameDonateRoute
+  '/u/$username/tip': typeof UUsernameTipRoute
   '/api/auth/$provider/callback': typeof ApiAuthProviderCallbackRoute
   '/api/public/auth/$provider': typeof ApiPublicAuthProviderRouteWithChildren
   '/api/public/auth/magic-link': typeof ApiPublicAuthMagicLinkRoute
@@ -654,6 +662,7 @@ export interface FileRoutesById {
   '/auth_/mastodon/callback': typeof AuthMastodonCallbackRoute
   '/u/$username/$slug': typeof UUsernameSlugRoute
   '/u/$username/donate': typeof UUsernameDonateRoute
+  '/u/$username/tip': typeof UUsernameTipRoute
   '/api_/auth/$provider/callback': typeof ApiAuthProviderCallbackRoute
   '/api_/public/auth/$provider': typeof ApiPublicAuthProviderRouteWithChildren
   '/api_/public/auth/magic-link': typeof ApiPublicAuthMagicLinkRoute
@@ -728,6 +737,7 @@ export interface FileRouteTypes {
     | '/auth/mastodon/callback'
     | '/u/$username/$slug'
     | '/u/$username/donate'
+    | '/u/$username/tip'
     | '/api/auth/$provider/callback'
     | '/api/public/auth/$provider'
     | '/api/public/auth/magic-link'
@@ -800,6 +810,7 @@ export interface FileRouteTypes {
     | '/auth/mastodon/callback'
     | '/u/$username/$slug'
     | '/u/$username/donate'
+    | '/u/$username/tip'
     | '/api/auth/$provider/callback'
     | '/api/public/auth/$provider'
     | '/api/public/auth/magic-link'
@@ -873,6 +884,7 @@ export interface FileRouteTypes {
     | '/auth_/mastodon/callback'
     | '/u/$username/$slug'
     | '/u/$username/donate'
+    | '/u/$username/tip'
     | '/api_/auth/$provider/callback'
     | '/api_/public/auth/$provider'
     | '/api_/public/auth/magic-link'
@@ -1374,6 +1386,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UUsernameDonateRouteImport
       parentRoute: typeof UUsernameRoute
     }
+    '/u/$username/tip': {
+      id: '/u/$username/tip'
+      path: '/tip'
+      fullPath: '/u/$username/tip'
+      preLoaderRoute: typeof UUsernameTipRouteImport
+      parentRoute: typeof UUsernameRoute
+    }
     '/api_/auth/$provider/callback': {
       id: '/api_/auth/$provider/callback'
       path: '/callback'
@@ -1526,11 +1545,13 @@ const AuthGitlabRouteWithChildren = AuthGitlabRoute._addFileChildren(
 interface UUsernameRouteChildren {
   UUsernameSlugRoute: typeof UUsernameSlugRoute
   UUsernameDonateRoute: typeof UUsernameDonateRoute
+  UUsernameTipRoute: typeof UUsernameTipRoute
 }
 
 const UUsernameRouteChildren: UUsernameRouteChildren = {
   UUsernameSlugRoute: UUsernameSlugRoute,
   UUsernameDonateRoute: UUsernameDonateRoute,
+  UUsernameTipRoute: UUsernameTipRoute,
 }
 
 const UUsernameRouteWithChildren = UUsernameRoute._addFileChildren(
