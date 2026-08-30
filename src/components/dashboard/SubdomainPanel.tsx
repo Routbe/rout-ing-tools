@@ -40,8 +40,31 @@ export function SubdomainPanel() {
   const [saving, setSaving] = useState(false);
   const [claiming, setClaiming] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [conflict, setConflict] = useState(false);
+  const [mailDiag, setMailDiag] = useState<MailDiagnostics>(null);
+  const [claims, setClaims] = useState<ClaimHistory[]>([]);
+  const [resending, setResending] = useState<string | null>(null);
   const loadSettings = useServerFn(getMySubdomainSettings);
   const saveSettings = useServerFn(setMySubdomainSettings);
+  const loadClaims = useServerFn(getMyRootClaims);
+  const resendMail = useServerFn(resendMyClaimMail);
+
+  const refreshStatus = useCallback(async () => {
+    const data = await loadSettings({});
+    setUsername(data.username);
+    setActive(data.activeSubdomain);
+    setTier(data.tier);
+    setRootStatus(data.rootStatus);
+    return data.rootStatus;
+  }, [loadSettings]);
+
+  const refreshClaims = useCallback(async () => {
+    try {
+      setClaims((await loadClaims({})) ?? []);
+    } catch {
+      /* claim-historie is optioneel */
+    }
+  }, [loadClaims]);
 
   useEffect(() => {
     if (!user) return;
@@ -55,8 +78,35 @@ export function SubdomainPanel() {
       setTarget(data.redirectTarget === "bluesky" ? "bluesky" : "rout_profile");
       setDid(data.blueskyDid ?? "");
       setLoaded(true);
+      void refreshClaims();
     })();
-  }, [user, loadSettings]);
+  }, [user, loadSettings, refreshClaims]);
+
+  // Realtime statuspolling: elke 30s en bij vensterfocus zolang DNS loopt.
+  useEffect(() => {
+    if (!user || rootStatus !== "pending_dns") return;
+    let stopped = false;
+    const check = async () => {
+      try {
+        const next = await refreshStatus();
+        if (!stopped && next === "active") {
+          toast.success("Je root-subdomein is nu live!");
+          void refreshClaims();
+        }
+      } catch {
+        /* stille achtergrondcontrole */
+      }
+    };
+    const id = setInterval(() => void check(), 30_000);
+    const onFocus = () => void check();
+    window.addEventListener("focus", onFocus);
+    return () => {
+      stopped = true;
+      clearInterval(id);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [user, rootStatus, refreshStatus, refreshClaims]);
+
 
   // Stille autosave zodra de schakelaar, het doel of de DID wijzigt.
   useEffect(() => {
