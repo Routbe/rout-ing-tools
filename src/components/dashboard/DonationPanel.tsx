@@ -46,18 +46,19 @@ export function DonationPanel({
 
   const clean = canonicalHandle(handle);
   const style = effectiveUrlStyle(urlStyle, verified);
-  const path = style === "clean" || style === "clean_at" ? `/${clean}/donate` : `/u/${clean}/donate`;
+  const base = style === "clean" || style === "clean_at" ? `/${clean}` : `/u/${clean}`;
+  const path = `${base}/tip`;
   const url = `https://rout.be${path}`;
 
   return (
     <section className="rounded-2xl border border-border bg-card p-4 sm:p-5">
       <header className="mb-3 flex items-center gap-2">
         <HeartHandshake className="h-4 w-4 text-primary" />
-        <h3 className="text-sm font-medium">Mijn Donatiepagina</h3>
+        <h3 className="text-sm font-medium">Mijn Steunpagina</h3>
       </header>
       <p className="mb-3 text-xs text-muted-foreground">
-        Jouw eigen steunpagina — supporters kiezen een bedrag, laten een bericht achter en betalen
-        met Bancontact, iDEAL, Apple Pay, Google Pay of kaart.
+        Jouw eigen steunpagina — supporters kiezen een bedrag, laten een bericht achter en geven een
+        fooi via Bancontact, iDEAL, Apple Pay of kaart.
       </p>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -76,7 +77,7 @@ export function DonationPanel({
           <Copy className="h-3.5 w-3.5" /> Kopieer
         </Button>
         <Button asChild size="sm" variant="outline" className="gap-1.5">
-          <a href={path} target="_blank" rel="noreferrer">
+          <a href={`${base}/donate`} target="_blank" rel="noreferrer">
             <ExternalLink className="h-3.5 w-3.5" /> Bekijk
           </a>
         </Button>
@@ -84,7 +85,9 @@ export function DonationPanel({
 
       <div className="mt-4 grid grid-cols-2 gap-2">
         <div className="rounded-xl border border-border p-3">
-          <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Ontvangen</p>
+          <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
+            Ontvangen fooien
+          </p>
           <p className="text-lg font-medium">
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : euro(summary?.totalCents ?? 0)}
           </p>
@@ -94,6 +97,7 @@ export function DonationPanel({
           <p className="text-lg font-medium">{loading ? "—" : (summary?.count ?? 0)}</p>
         </div>
       </div>
+
 
       {(summary?.recent.length ?? 0) > 0 && (
         <ul className="mt-3 space-y-2">
