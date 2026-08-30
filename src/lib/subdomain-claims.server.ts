@@ -141,3 +141,73 @@ export async function runDnsPropagationCheck(): Promise<{
   }
   return { checked: rows.length, promoted };
 }
+
+/** Herverstuurt de Brevo-notificaties voor een bestaande claim. */
+export async function resendClaimMails(claimId: string): Promise<{
+  admin_email: string;
+  user_email: string;
+}> {
+  const rows = (await sql`
+    select c.id, c.requested_subdomain, p.email, p.display_name, p.username
+      from public.subdomain_root_claims c
+      left join public.profiles p on p.id = c.user_id
+     where c.id = ${claimId}
+     limit 1
+  `) as Array<Record<string, unknown>>;
+  const claim = rows[0];
+  if (!claim) throw new Error("Claim niet gevonden");
+
+  const apiKey = process.env["BREVO_API_KEY"];
+  if (!apiKey) return { admin_email: "failed_brevo_key", user_email: "failed_brevo_key" };
+
+  const subdomain = String(claim["requested_subdomain"]);
+  const email = (claim["email"] as string | null) ?? null;
+  const userName =
+    (claim["display_name"] as string | null) || (claim["username"] as string | null) || "ROUT-lid";
+  const adminEmail = process.env["ADMIN_EMAIL"] ?? "admin@rout.be";
+
+  const send = async (payload: Record<string, unknown>) => {
+    try {
+      const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: { "api-key": apiKey, "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) return "sent";
+      return res.status === 401 || res.status === 403 ? "failed_brevo_key" : "failed";
+    } catch {
+      return "failed_network";
+    }
+  };
+
+  const [admin, userMail] = await Promise.all([
+    send({
+      templateId: 2,
+      to: [{ email: adminEmail }],
+      params: {
+        requested_subdomain: subdomain,
+        cname_source: subdomain.replace(/\.rout\.be$/, ""),
+        user_name: userName,
+        user_email: email ?? "",
+      },
+    }),
+    email
+      ? send({
+          templateId: 3,
+          to: [{ email }],
+          params: {
+            user_name: userName,
+            requested_subdomain: subdomain,
+            active_subdomain: subdomain,
+          },
+        })
+      : Promise.resolve("failed"),
+  ]);
+
+  await sql`
+    update public.subdomain_root_claims
+       set admin_mail_status = ${admin}, user_mail_status = ${userMail}
+     where id = ${claimId}
+  `;
+  return { admin_email: admin, user_email: userMail };
+}
