@@ -120,6 +120,9 @@ export function ProfileMenu() {
       : "Free";
   const isPaidTier = tierLabel !== "Free";
   const profilePath = styledProfilePath(handle, urlStyle);
+  const verifiedPath = `/${handle}`;
+  const aliasPath = `/u/${handle}`;
+
 
   return (
     <div className="flex items-center gap-3 sm:gap-4">
