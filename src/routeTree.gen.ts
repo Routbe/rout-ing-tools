@@ -37,6 +37,7 @@ import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as WifiQrRouteImport } from './routes/wifi-qr'
 import { Route as UsernameSlugRouteImport } from './routes/$username.$slug'
 import { Route as UsernameDonateRouteImport } from './routes/$username.donate'
+import { Route as UsernameTipRouteImport } from './routes/$username.tip'
 import { Route as DotwellKnownAtprotoDidRouteImport } from './routes/[.]well-known.atproto-did'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -219,6 +220,11 @@ const UsernameSlugRoute = UsernameSlugRouteImport.update({
 const UsernameDonateRoute = UsernameDonateRouteImport.update({
   id: '/donate',
   path: '/donate',
+  getParentRoute: () => UsernameRoute,
+} as any)
+const UsernameTipRoute = UsernameTipRouteImport.update({
+  id: '/tip',
+  path: '/tip',
   getParentRoute: () => UsernameRoute,
 } as any)
 const DotwellKnownAtprotoDidRoute = DotwellKnownAtprotoDidRouteImport.update({
@@ -480,6 +486,7 @@ export interface FileRoutesByFullPath {
   '/wifi-qr': typeof WifiQrRoute
   '/$username/$slug': typeof UsernameSlugRoute
   '/$username/donate': typeof UsernameDonateRoute
+  '/$username/tip': typeof UsernameTipRoute
   '/.well-known/atproto-did': typeof DotwellKnownAtprotoDidRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -553,6 +560,7 @@ export interface FileRoutesByTo {
   '/wifi-qr': typeof WifiQrRoute
   '/$username/$slug': typeof UsernameSlugRoute
   '/$username/donate': typeof UsernameDonateRoute
+  '/$username/tip': typeof UsernameTipRoute
   '/.well-known/atproto-did': typeof DotwellKnownAtprotoDidRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -628,6 +636,7 @@ export interface FileRoutesById {
   '/wifi-qr': typeof WifiQrRoute
   '/$username/$slug': typeof UsernameSlugRoute
   '/$username/donate': typeof UsernameDonateRoute
+  '/$username/tip': typeof UsernameTipRoute
   '/.well-known/atproto-did': typeof DotwellKnownAtprotoDidRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -703,6 +712,7 @@ export interface FileRouteTypes {
     | '/wifi-qr'
     | '/$username/$slug'
     | '/$username/donate'
+    | '/$username/tip'
     | '/.well-known/atproto-did'
     | '/admin'
     | '/dashboard'
@@ -776,6 +786,7 @@ export interface FileRouteTypes {
     | '/wifi-qr'
     | '/$username/$slug'
     | '/$username/donate'
+    | '/$username/tip'
     | '/.well-known/atproto-did'
     | '/admin'
     | '/dashboard'
@@ -850,6 +861,7 @@ export interface FileRouteTypes {
     | '/wifi-qr'
     | '/$username/$slug'
     | '/$username/donate'
+    | '/$username/tip'
     | '/.well-known/atproto-did'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
@@ -1146,6 +1158,13 @@ declare module '@tanstack/react-router' {
       path: '/donate'
       fullPath: '/$username/donate'
       preLoaderRoute: typeof UsernameDonateRouteImport
+      parentRoute: typeof UsernameRoute
+    }
+    '/$username/tip': {
+      id: '/$username/tip'
+      path: '/tip'
+      fullPath: '/$username/tip'
+      preLoaderRoute: typeof UsernameTipRouteImport
       parentRoute: typeof UsernameRoute
     }
     '/.well-known/atproto-did': {
@@ -1462,11 +1481,13 @@ declare module '@tanstack/react-router' {
 interface UsernameRouteChildren {
   UsernameSlugRoute: typeof UsernameSlugRoute
   UsernameDonateRoute: typeof UsernameDonateRoute
+  UsernameTipRoute: typeof UsernameTipRoute
 }
 
 const UsernameRouteChildren: UsernameRouteChildren = {
   UsernameSlugRoute: UsernameSlugRoute,
   UsernameDonateRoute: UsernameDonateRoute,
+  UsernameTipRoute: UsernameTipRoute,
 }
 
 const UsernameRouteWithChildren = UsernameRoute._addFileChildren(
