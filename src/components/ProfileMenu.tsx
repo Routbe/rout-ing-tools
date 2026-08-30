@@ -38,6 +38,7 @@ import { getMyAccount } from "@/lib/account.functions";
 export function ProfileMenu() {
   const { user, signOut, loading } = useAuth();
   const { style: urlStyle } = useUrlStyle();
+
   const nav = useNavigate();
   const [fullName, setFullName] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
