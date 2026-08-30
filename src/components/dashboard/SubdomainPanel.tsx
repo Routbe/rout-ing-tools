@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { Copy, Crown, Globe, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  claimRootSubdomain,
-  getMySubdomainSettings,
-  setMySubdomainSettings,
-} from "@/lib/subdomain.functions";
+import { getMySubdomainSettings, setMySubdomainSettings } from "@/lib/subdomain.functions";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -41,7 +37,6 @@ export function SubdomainPanel() {
   const [loaded, setLoaded] = useState(false);
   const loadSettings = useServerFn(getMySubdomainSettings);
   const saveSettings = useServerFn(setMySubdomainSettings);
-  const claimRoot = useServerFn(claimRootSubdomain);
 
   useEffect(() => {
     if (!user) return;
