@@ -227,12 +227,109 @@ export function SubdomainPanel() {
         </div>
       </div>
 
+      {conflict && (
+        <p className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-foreground">
+          ℹ️ Je hebt al een actieve claim of verwerking voor dit subdomein. Bekijk de status
+          hieronder.
+        </p>
+      )}
+
+      {mailDiag && (
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border p-3 text-[11px]">
+          <span className="text-muted-foreground">Brevo-verzending:</span>
+          <MailStatusBadge label="Admin mail" status={mailDiag.admin} />
+          <MailStatusBadge label="User mail" status={mailDiag.user} />
+        </div>
+      )}
+
       {rootStatus === "pending_dns" && (
         <p className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-foreground">
           ⏳ DNS in behandeling — Je root-subdomein {handle}.rout.be wordt binnen 24 uur geactiveerd
           op Infomaniak. Tot die tijd is {handle}.r.rout.be actief.
         </p>
       )}
+
+      {tier === "root_lifetime" && rootStatus === "active" && (
+        <p className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-3 text-xs text-foreground">
+          🎉 Je root-subdomein {handle}.rout.be is nu live &amp; actief!
+        </p>
+      )}
+
+      {claims.length > 0 && (
+        <div className="space-y-2 rounded-xl border border-border p-3">
+          <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
+            Claims &amp; subdomein historie
+          </p>
+          {claims.map((c) => {
+            const failed = c.adminMailStatus !== "sent" || c.userMailStatus !== "sent";
+            const effective = c.rootStatus ?? c.status;
+            return (
+              <div key={c.id} className="space-y-1.5 rounded-lg border border-border/60 p-2.5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-mono text-xs">{c.requestedSubdomain}</span>
+                  <span
+                    className={cn(
+                      "rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase",
+                      effective === "active"
+                        ? "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300"
+                        : "bg-amber-500/15 text-amber-900 dark:text-amber-200",
+                    )}
+                  >
+                    {effective}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">
+                    {new Date(c.createdAt).toLocaleDateString("nl-BE")}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <MailStatusBadge label="Admin mail" status={c.adminMailStatus} />
+                  <MailStatusBadge label="User mail" status={c.userMailStatus} />
+                </div>
+                {failed && (
+                  <div className="space-y-1.5">
+                    <p className="text-[11px] text-destructive">
+                      Een e-mailmelding kon niet verstuurd worden
+                      {typeof c.errorPayload === "object" && c.errorPayload
+                        ? ` — ${JSON.stringify(c.errorPayload).slice(0, 160)}`
+                        : ""}
+                      .
+                    </p>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="h-8 rounded-lg text-xs"
+                      disabled={resending === c.id}
+                      onClick={async () => {
+                        setResending(c.id);
+                        try {
+                          const res = await resendMail({ data: { claimId: c.id } });
+                          toast.success(
+                            `Admin: ${res.admin_email} · Gebruiker: ${res.user_email}`,
+                          );
+                          await refreshClaims();
+                        } catch {
+                          toast.error("Opnieuw versturen mislukt.");
+                        } finally {
+                          setResending(null);
+                        }
+                      }}
+                    >
+                      {resending === c.id ? (
+                        <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Mail className="mr-1.5 h-3.5 w-3.5" aria-hidden />
+                      )}
+                      📧 Opnieuw e-mail notificatie versturen
+                    </Button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
 
       {rootStatus === "none" && (
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border p-3">
