@@ -176,6 +176,7 @@ function inputHint(kind: string): { prefix?: string; help: string } {
 export function ProfileEditor() {
   const { user } = useAuth();
   const { style: rawUrlStyle, save: saveUrlStylePref } = useUrlStyle();
+
   const loadProfileEditor = useServerFn(getStudioProfile);
   const checkHandle = useServerFn(checkStudioHandle);
   const saveProfile = useServerFn(saveStudioProfile);
