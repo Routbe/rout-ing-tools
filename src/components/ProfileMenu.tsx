@@ -48,6 +48,9 @@ export function ProfileMenu() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const { isAdmin } = useIsAdmin();
   const loadAccount = useServerFn(getMyAccount);
+  const dualIdentity = verified || tier === "pro" || earlyBeliever;
+  const { space, select } = useIdentitySpace(dualIdentity);
+
 
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
